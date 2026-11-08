@@ -1,0 +1,8 @@
+{
+  "host": "siren.satuputarudemak.id",
+  "port": 3306,
+  "database": "u490770675_siren",
+  "user": "u490770675_adminsiren",
+  "password": "*Demak2026",
+  "enabled": true
+}

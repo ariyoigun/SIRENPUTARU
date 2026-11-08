@@ -1,0 +1,274 @@
+/* public/css/style.css */
+/* SIREN Kabupaten Demak - Theme & Custom Styles */
+
+:root {
+  --primary-navy: #0a192f;
+  --secondary-navy: #0f2744;
+  --accent-blue: #1e40af;
+  --bright-blue: #2563eb;
+  --light-blue: #38bdf8;
+  --card-bg: #ffffff;
+  --text-dark: #0f172a;
+  --text-muted: #64748b;
+  --border-light: #e2e8f0;
+  --bg-main: #f8fafc;
+  
+  /* Bidang Color Codes */
+  --bm-color: #2563eb;
+  --bm-bg: #eff6ff;
+  --bm-border: #93c5fd;
+  
+  --sda-color: #0d9488;
+  --sda-bg: #f0fdfa;
+  --sda-border: #99f6e4;
+  
+  --ck-color: #7c3aed;
+  --ck-bg: #f5f3ff;
+  --ck-border: #ddd6fe;
+  
+  --trp-color: #d97706;
+  --trp-bg: #fffbeb;
+  --trp-border: #fde68a;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  color: var(--text-dark);
+  background-color: var(--bg-main);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth Transitions */
+.transition-all-custom {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glassmorphism Dark */
+.glass-navy {
+  background: rgba(10, 25, 47, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+}
+
+/* Gradient Texts & Backgrounds */
+.gradient-navy {
+  background: linear-gradient(135deg, #0a192f 0%, #1e3a8a 50%, #0f2744 100%);
+}
+
+.gradient-blue-accent {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 50%, #ffffff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Bidang specific badges and border left highlights */
+.bidang-bina-marga {
+  border-left: 4px solid var(--bm-color) !important;
+}
+.bidang-sda-bk {
+  border-left: 4px solid var(--sda-color) !important;
+}
+.bidang-cipta-karya {
+  border-left: 4px solid var(--ck-color) !important;
+}
+.bidang-tata-ruang {
+  border-left: 4px solid var(--trp-color) !important;
+}
+
+.badge-bm {
+  background-color: var(--bm-bg);
+  color: var(--bm-color);
+  border: 1px solid var(--bm-border);
+}
+.badge-sda {
+  background-color: var(--sda-bg);
+  color: var(--sda-color);
+  border: 1px solid var(--sda-border);
+}
+.badge-ck {
+  background-color: var(--ck-bg);
+  color: var(--ck-color);
+  border: 1px solid var(--ck-border);
+}
+.badge-trp {
+  background-color: var(--trp-bg);
+  color: var(--trp-color);
+  border: 1px solid var(--trp-border);
+}
+
+/* Map Containers */
+#googleMap, #internalMap {
+  width: 100%;
+  height: 580px;
+  border-radius: 1rem;
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  #googleMap, #internalMap {
+    height: 400px;
+  }
+}
+
+/* Custom Pin Pulse Animation */
+@keyframes pin-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pin-active {
+  animation: pin-pulse 1.8s infinite;
+}
+
+/* Map Legend & Overlay Controls */
+.map-floating-panel {
+  position: absolute;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom Table Styles */
+.siren-table th {
+  background-color: #0f2744;
+  color: #ffffff;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.875rem 1rem;
+}
+
+.siren-table td {
+  padding: 0.875rem 1rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.siren-table tr:hover td {
+  background-color: #f8fafc;
+}
+
+/* Light Theme for Internal Dashboard */
+.internal-light-bg {
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.internal-card-white {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+}
+
+.internal-sidebar-white {
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.internal-table-light th {
+  background-color: #0f2744;
+  color: #ffffff;
+}
+
+.internal-table-light td {
+  color: #1e293b;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.internal-table-light tr:hover td {
+  background-color: #f0f7ff !important;
+}
+
+/* Active Filter Pill */
+.filter-pill {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.filter-pill:hover {
+  transform: translateY(-1px);
+}
+.filter-pill.active {
+  background-color: #1e3a8a !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.3);
+}
+
+/* Captcha Box styling */
+.captcha-box {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border: 2px dashed #38bdf8;
+  font-family: 'Courier New', Courier, monospace;
+  letter-spacing: 3px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  user-select: none;
+}
+
+/* Stat Card Hover */
+.stat-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.12);
+  border-color: #93c5fd;
+}
+
+/* Print Styling */
+@media print {
+  .no-print, header, nav, #loginSection, .filter-section {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .siren-table th {
+    background-color: #e2e8f0 !important;
+    color: #000000 !important;
+  }
+}
+
