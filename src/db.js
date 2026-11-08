@@ -139,3 +139,4 @@ module.exports = {
   isConnected: () => isConnected,
   getLastError: () => lastError
 };
+

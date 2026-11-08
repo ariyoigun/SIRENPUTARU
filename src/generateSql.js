@@ -186,3 +186,4 @@ sql += `\nCOMMIT;\n
 
 fs.writeFileSync(OUT_FILE, sql, 'utf8');
 console.log(`[SQL Generator] File berhasil dibuat: database_siren.sql (${(sql.length / 1024).toFixed(1)} KB)`);
+

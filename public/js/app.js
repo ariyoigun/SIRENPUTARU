@@ -174,12 +174,23 @@ async function loadKecamatan() {
 }
 
 function populateKecamatanDropdowns() {
+  const options = `<option value="all">Semua Kecamatan (14)</option>` +
+    state.kecamatan.map(k => `<option value="${k.nama}">Kecamatan ${k.nama}</option>`).join('');
+
   // Modal Kecamatan Select
   const modalSelect = document.getElementById('modalKecamatanSelect');
   if (modalSelect) {
     modalSelect.innerHTML = `<option value="">-- Pilih Kecamatan --</option>` +
       state.kecamatan.map(k => `<option value="${k.nama}">Kecamatan ${k.nama}</option>`).join('');
   }
+
+  // Dashboard Tab 1 Kecamatan Filter
+  const internalFilter = document.getElementById('internalFilterKecamatan');
+  if (internalFilter) internalFilter.innerHTML = options;
+
+  // Tab 2 Pekerjaan Kecamatan Filter
+  const tabFilter = document.getElementById('tabPekerjaanKecamatanSelect');
+  if (tabFilter) tabFilter.innerHTML = options;
 }
 
 // Dynamic Year Management
@@ -219,15 +230,17 @@ function renderYearFilterPills() {
     container.innerHTML = html;
   }
 
-  // Internal Tab Pekerjaan Year Select
+  // Dropdown options for Internal filters (Tab 1 & Tab 2)
+  let yearOptions = `<option value="all">Semua Tahun</option>`;
+  state.activeYears.forEach(y => {
+    yearOptions += `<option value="${y}" ${state.filters.tahun === y ? 'selected' : ''}>Tahun ${y}</option>`;
+  });
+
+  const internalYearSelect = document.getElementById('internalFilterTahun');
+  if (internalYearSelect) internalYearSelect.innerHTML = yearOptions;
+
   const tabYearSelect = document.getElementById('tabPekerjaanYearSelect');
-  if (tabYearSelect) {
-    let options = `<option value="all">Semua Tahun</option>`;
-    state.activeYears.forEach(y => {
-      options += `<option value="${y}" ${state.filters.tahun === y ? 'selected' : ''}>Tahun ${y}</option>`;
-    });
-    tabYearSelect.innerHTML = options;
-  }
+  if (tabYearSelect) tabYearSelect.innerHTML = yearOptions;
 }
 
 function renderModalYearFields(item = null) {
@@ -507,9 +520,90 @@ function resetKecamatanFilter() {
   setKecamatanFilter('all');
 }
 
-// Sorting Handlers
+// Sorting & Filtering Handlers for Internal Dashboard
+function handleBidangFilterChange(bidang) {
+  state.filters.bidang = bidang;
+  syncFilterControls();
+  renderInternalTable();
+}
+
+function handleTahunFilterChange(tahun) {
+  state.filters.tahun = tahun;
+  syncFilterControls();
+  renderInternalTable();
+}
+
+function handleKecamatanFilterChange(kecamatan) {
+  state.filters.kecamatan = kecamatan;
+  syncFilterControls();
+  renderInternalTable();
+}
+
+function handleInternalSearch(val) {
+  state.filters.search = val;
+  const s1 = document.getElementById('internalSearch');
+  const s2 = document.getElementById('tabPekerjaanSearch');
+  if (s1 && s1.value !== val) s1.value = val;
+  if (s2 && s2.value !== val) s2.value = val;
+  syncFilterControls();
+  renderInternalTable();
+}
+
+function resetAllInternalFilters() {
+  state.filters.kecamatan = 'all';
+  state.filters.tahun = 'all';
+  state.filters.bidang = 'all';
+  state.filters.search = '';
+  state.filters.prioritas = 'all';
+  state.sortBy = 'default';
+  state.sortColumn = null;
+
+  const s1 = document.getElementById('internalSearch');
+  if (s1) s1.value = '';
+  const s2 = document.getElementById('tabPekerjaanSearch');
+  if (s2) s2.value = '';
+
+  syncFilterControls();
+  renderInternalTable();
+}
+
+function syncFilterControls() {
+  const setSelectVal = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val !== undefined) el.value = val;
+  };
+
+  setSelectVal('internalFilterBidang', state.filters.bidang);
+  setSelectVal('tabPekerjaanBidangSelect', state.filters.bidang);
+
+  setSelectVal('internalFilterTahun', state.filters.tahun);
+  setSelectVal('tabPekerjaanYearSelect', state.filters.tahun);
+
+  setSelectVal('internalFilterKecamatan', state.filters.kecamatan);
+  setSelectVal('tabPekerjaanKecamatanSelect', state.filters.kecamatan);
+
+  setSelectVal('internalSortSelect', state.sortBy);
+
+  // Update status indicator
+  const statusEl = document.getElementById('infographicFilterStatus');
+  if (statusEl) {
+    const parts = [];
+    if (state.filters.kecamatan !== 'all') parts.push(`Kecamatan: <b class="text-blue-900">${state.filters.kecamatan}</b>`);
+    if (state.filters.tahun !== 'all') parts.push(`Tahun: <b class="text-blue-900">${state.filters.tahun}</b>`);
+    if (state.filters.bidang !== 'all') parts.push(`Bidang: <b class="text-blue-900">${state.filters.bidang}</b>`);
+    if (state.filters.search) parts.push(`Cari: "<b>${state.filters.search}</b>"`);
+
+    if (parts.length > 0) {
+      statusEl.innerHTML = `Filter Aktif: ${parts.join(' • ')} <button onclick="resetAllInternalFilters()" class="ml-2 text-rose-600 underline font-bold text-xs">Reset Semua</button>`;
+    } else {
+      statusEl.innerHTML = `Menampilkan seluruh data tanpa filter.`;
+    }
+  }
+}
+
 function handleSortChange(val) {
   state.sortBy = val;
+  syncFilterControls();
   renderInternalTable();
 }
 
@@ -521,6 +615,7 @@ function handleSortColumn(col) {
     state.sortAsc = true;
   }
   state.sortBy = 'column';
+  syncFilterControls();
   renderInternalTable();
 }
 
@@ -1241,38 +1336,24 @@ function renderInternalInfographics() {
 // Click on infographic triggers table filter
 function applyInfographicKecamatanFilter(kecName) {
   state.filters.kecamatan = kecName;
-  const statusEl = document.getElementById('infographicFilterStatus');
-  if (statusEl) {
-    statusEl.innerHTML = `Filter Aktif: <b class="text-blue-900">Kecamatan ${kecName}</b> <button onclick="clearInfographicFilter()" class="ml-2 text-rose-600 underline text-xs font-bold">Reset Filter</button>`;
-  }
+  syncFilterControls();
   renderInternalTable();
 }
 
 function applyInfographicTahunFilter(tahun) {
   state.filters.tahun = tahun;
-  const statusEl = document.getElementById('infographicFilterStatus');
-  if (statusEl) {
-    statusEl.innerHTML = `Filter Aktif: <b class="text-blue-900">Tahun Anggaran ${tahun}</b> <button onclick="clearInfographicFilter()" class="ml-2 text-rose-600 underline text-xs font-bold">Reset Filter</button>`;
-  }
+  syncFilterControls();
   renderInternalTable();
 }
 
 function applyInfographicBidangFilter(bidang) {
   state.filters.bidang = bidang;
-  const statusEl = document.getElementById('infographicFilterStatus');
-  if (statusEl) {
-    statusEl.innerHTML = `Filter Aktif: <b class="text-blue-900">Bidang ${bidang}</b> <button onclick="clearInfographicFilter()" class="ml-2 text-rose-600 underline text-xs font-bold">Reset Filter</button>`;
-  }
+  syncFilterControls();
   renderInternalTable();
 }
 
 function clearInfographicFilter() {
-  state.filters.kecamatan = 'all';
-  state.filters.tahun = 'all';
-  state.filters.bidang = 'all';
-  const statusEl = document.getElementById('infographicFilterStatus');
-  if (statusEl) statusEl.innerHTML = `Menampilkan seluruh data tanpa filter grafis.`;
-  renderInternalTable();
+  resetAllInternalFilters();
 }
 
 // ==========================================
@@ -1950,3 +2031,9 @@ window.handleSortColumn = handleSortColumn;
 window.viewProjectDetail = viewProjectDetail;
 window.closeModal = closeModal;
 window.clearInfographicFilter = clearInfographicFilter;
+window.handleBidangFilterChange = handleBidangFilterChange;
+window.handleTahunFilterChange = handleTahunFilterChange;
+window.handleKecamatanFilterChange = handleKecamatanFilterChange;
+window.handleInternalSearch = handleInternalSearch;
+window.resetAllInternalFilters = resetAllInternalFilters;
+window.syncFilterControls = syncFilterControls;
